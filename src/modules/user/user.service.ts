@@ -13,7 +13,7 @@ export class UserService {
     private readonly userModel: Model<User>,
     @InjectModel(DocumentType.name)
     private readonly documentTypeModel: Model<DocumentType>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     const documentType = await this.documentTypeModel.findById(
@@ -28,21 +28,27 @@ export class UserService {
   findAll() {
     return `This action returns all user`;
   }
-
-  async findOne(id: ObjectId): Promise<User | null> {
-    return await this.userModel
+  async findOne(id: ObjectId): Promise<any> {
+    const user = await this.userModel
       .findById(id)
-      .select('-refreshTokens -password')
-      .populate({
-        path: 'role',
-        populate: {
-          path: 'permissions',
-          model: 'Permission',
-          select: 'name code description',
-        },
-      })
-      .exec();
+      .select('-refreshTokens -password -createdAt -updatedAt -__v -status -verifiedAccount')
+      .populate('centers')
+      .lean();
+
+    if (!user || !user.role || !user.centers) {
+      return user;
+    }
+    const roleIdStr = user.role.toString();
+    const embeddedRole = user.centers
+      .flatMap((center: any) => center.roles || [])
+      .find((role: any) => role._id?.toString() === roleIdStr);
+
+    return {
+      ...user,
+      role: embeddedRole ?? null,
+    };
   }
+
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;

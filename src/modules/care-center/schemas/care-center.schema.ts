@@ -54,8 +54,21 @@ export class CareCenter extends Document {
     })
     location: Ubigeo;
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Role' }] })
-    roles: Types.ObjectId[] | Role[];
+    @Prop({
+        type: [{
+            name: { type: String, required: true },
+            permissions: { type: [String], required: true },
+            description: { type: String },
+            status: { type: Boolean, default: true }
+        }],
+        default: []
+    })
+    roles: Array<{
+        name: string;
+        permissions: string[];
+        description?: string;
+        status?: boolean;
+    }>;
 
     @Prop({
         type: Types.ObjectId,

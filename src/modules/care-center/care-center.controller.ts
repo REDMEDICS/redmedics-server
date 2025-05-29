@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { CareCenterService } from './care-center.service';
 import { CreateCareCenterDto } from './dto/create-care-center.dto';
 import { UpdateCareCenterDto } from './dto/update-care-center.dto';
-
+import { AccessAuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { ExpressRequestWithJWT } from 'src';
+@UseGuards(AccessAuthGuard)
 @Controller('care-center')
 export class CareCenterController {
   constructor(private readonly careCenterService: CareCenterService) {}
 
   @Post()
-  create(@Body() createCareCenterDto: CreateCareCenterDto) {
-    return this.careCenterService.create(createCareCenterDto);
+  create(@Body() createCareCenterDto: CreateCareCenterDto, @Req() req: ExpressRequestWithJWT) {
+    const { id } = req.user;
+    return this.careCenterService.create(createCareCenterDto, id);
   }
 
   @Get()
