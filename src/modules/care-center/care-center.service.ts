@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCareCenterDto } from './dto/create-care-center.dto';
 import { UpdateCareCenterDto } from './dto/update-care-center.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CareCenter } from './schemas/care-center.schema';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { Permission } from '../permission/schemas/permission.schema';
 import { User } from '../user/schemas/user.schema';
+import { NewCareCenterDto } from './dto/new-care-center.dto';
 
 @Injectable()
 export class CareCenterService {
@@ -15,7 +16,7 @@ export class CareCenterService {
     @InjectModel(Permission.name) private readonly permissionModel: Model<Permission>,
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) { }
-  async create(createCareCenterDto: CreateCareCenterDto, userId: any) {
+  async create(createCareCenterDto: CreateCareCenterDto, userId: ObjectId) {
     const permissions = await this.permissionModel.find().select('code -_id').lean();
     const permissionCodes = permissions.map(p => p.code);
     const roleId = new Types.ObjectId();
@@ -28,8 +29,7 @@ export class CareCenterService {
         description: 'Perfil administrador',
         status: true
       }],
-      createdBy: userId,
-      userId
+      createdBy: userId
     });
     await this.userModel.findByIdAndUpdate(
       userId,
@@ -38,15 +38,33 @@ export class CareCenterService {
     return careCenter;
   }
 
-  findAll() {
-    return `This action returns all careCenter`;
+  async newCareCenter(newCareCenterDto: NewCareCenterDto, userId: ObjectId) {
+    const careCenter = await this.careCenterModel.create({ ...newCareCenterDto, createdBy: userId });
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { centers: careCenter._id } }
+    );
+    return careCenter;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} careCenter`;
+  async findAll(userId: ObjectId) {
+    const data: any = await this.userModel
+      .findById(userId)
+      .select('centers')
+      .populate('centers', '-roles -createdAt -updatedAt')
+      .lean();
+    return data.centers;
   }
 
-  update(id: number, updateCareCenterDto: UpdateCareCenterDto) {
+  async findOne(id: string) {
+    return this.careCenterModel.findById(id).select('-createdAt -updatedAt -createdBy').lean();
+  }
+
+  async update(id: string, updateCareCenterDto: UpdateCareCenterDto, userId: ObjectId) {
+    const existingCenter = await this.careCenterModel.findById(id);
+    if (!existingCenter) {
+      throw new NotFoundException(`Centro con ID ${id} no encontrado`);
+    }
     return `This action updates a #${id} careCenter`;
   }
 

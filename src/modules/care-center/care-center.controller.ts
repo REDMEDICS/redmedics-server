@@ -4,30 +4,39 @@ import { CreateCareCenterDto } from './dto/create-care-center.dto';
 import { UpdateCareCenterDto } from './dto/update-care-center.dto';
 import { AccessAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { ExpressRequestWithJWT } from 'src';
+import { NewCareCenterDto } from './dto/new-care-center.dto';
 @UseGuards(AccessAuthGuard)
 @Controller('care-center')
 export class CareCenterController {
   constructor(private readonly careCenterService: CareCenterService) {}
 
-  @Post()
+  @Post('register')
   create(@Body() createCareCenterDto: CreateCareCenterDto, @Req() req: ExpressRequestWithJWT) {
     const { id } = req.user;
     return this.careCenterService.create(createCareCenterDto, id);
   }
 
+  @Post()
+  newCareCenter(@Body() newCareCenterDto: NewCareCenterDto, @Req() req: ExpressRequestWithJWT) {
+    const { id } = req.user;
+    return this.careCenterService.newCareCenter(newCareCenterDto, id);
+  }
+
   @Get()
-  findAll() {
-    return this.careCenterService.findAll();
+  findAll(@Req() req: ExpressRequestWithJWT) {
+    const { id } = req.user;
+    return this.careCenterService.findAll(id);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.careCenterService.findOne(+id);
+    return this.careCenterService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCareCenterDto: UpdateCareCenterDto) {
-    return this.careCenterService.update(+id, updateCareCenterDto);
+  update(@Param('id') id: string, @Body() updateCareCenterDto: UpdateCareCenterDto, @Req() req: ExpressRequestWithJWT) {
+   
+    return this.careCenterService.update(id, updateCareCenterDto, req.user.id);
   }
 
   @Delete(':id')

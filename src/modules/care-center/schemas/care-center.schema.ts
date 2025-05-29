@@ -47,12 +47,8 @@ export class CareCenter extends Document {
     @Prop({ default: false })
     status: boolean;
 
-    @Prop({
-        type: Types.ObjectId,
-        ref: 'Ubigeo',
-        // required: true,
-    })
-    location: Ubigeo;
+    @Prop()
+    ubigeo: string;
 
     @Prop({
         type: [{
