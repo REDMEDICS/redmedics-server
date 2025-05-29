@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude } from 'class-transformer';
 import { Document, Types } from 'mongoose';
-import { CareCenter, Role } from 'src/modules/care-center/schemas/care-center.schema';
+import { CareCenter } from 'src/modules/care-center/schemas/care-center.schema';
 import { DocumentType } from 'src/modules/document-type/schemas/document-type.schema';
 
 @Schema({ _id: false })
@@ -16,8 +16,9 @@ export const ProviderSchema = SchemaFactory.createForClass(Provider);
 
 @Schema({ timestamps: true })
 export class User extends Document {
-  @Prop({ type: Types.ObjectId, ref: 'Role' })
-  role: Role;
+
+  @Prop({ type: Types.ObjectId, index: true })
+  role?: Types.ObjectId;
 
   @Prop({ required: true, unique: true })
   email: string;

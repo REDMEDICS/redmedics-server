@@ -69,72 +69,57 @@ export class PermissionService {
     return this.permissionModel.findByIdAndDelete(id).exec();
   }
 
-async generateAndInsertPermissions() {
-    // const entities = [
-    //   "chats", "consultations", "countries", "documenttypes", "features", "featuretypes",
-    //   "mapvisibilities", "measurementtypes", "permissions", "properties", "propertytypes",
-    //   "publicationtypes", "roles", "ubigeos", "users"
-    // ];
+  async generateAndInsertPermissions() {
+    const entities = [
+      "users", "countries"
+    ];
 
-    // const actions = ["create", "read", "update", "delete", "activate"];
-    // const actionTranslations: Record<string, string> = {
-    //   "create": "Crear",
-    //   "read": "Ver",
-    //   "update": "Actualizar",
-    //   "delete": "Eliminar",
-    //   "activate": "Activar"
-    // };
+    const actions = ["create", "read", "update", "delete", "activate"];
+    const actionTranslations: Record<string, string> = {
+      "create": "Crear",
+      "read": "Ver",
+      "update": "Actualizar",
+      "delete": "Eliminar",
+      "activate": "Activar"
+    };
 
-    // const entityTranslations: Record<string, string> = {
-    //   "chats": "Chats",
-    //   "consultations": "Consultas",
-    //   "countries": "Países",
-    //   "documenttypes": "Tipos de Documento",
-    //   "features": "Características",
-    //   "featuretypes": "Tipos de Característica",
-    //   "mapvisibilities": "Visibilidades de Mapa",
-    //   "measurementtypes": "Tipos de Medición",
-    //   "permissions": "Permisos",
-    //   "properties": "Propiedades",
-    //   "propertytypes": "Tipos de Propiedad",
-    //   "publicationtypes": "Tipos de Publicación",
-    //   "roles": "Roles",
-    //   "ubigeos": "Ubigeos",
-    //   "users": "Usuarios"
-    // };
-    // const actionDescription: Record<string, string> = {
-    //   "create": "Permite crear",
-    //   "read": "Permite ver",
-    //   "update": "Permite actualizar",
-    //   "delete": "Permite eliminar",
-    //   "activate": "Permite activar"
-    // };
+    const entityTranslations: Record<string, string> = {
+      "users": "Usuarios",
+      "countries": "Países"
+    };
+    const actionDescription: Record<string, string> = {
+      "create": "Permite crear",
+      "read": "Permite ver",
+      "update": "Permite actualizar",
+      "delete": "Permite eliminar",
+      "activate": "Permite activar"
+    };
 
-    // const permissions = [];
+    const permissions: any = [];
 
-    // for (const entity of entities) {
-    //   for (const action of actions) {
-    //     const code = `${action}_${entity}`;
-    //     const name = `${actionTranslations[action]} ${entityTranslations[entity]}`;
-    //     const description = `${actionDescription[action]} ${entityTranslations[entity].toLowerCase()}`; 
-    //     const exists = await this.permissionModel.exists({ code });
-    //     if (!exists) {
-    //       permissions.push({
-    //         name,
-    //         code,
-    //         description, 
-    //         status: true,
-    //       });
-    //     }
-    //   }
-    // }
+    for (const entity of entities) {
+      for (const action of actions) {
+        const code = `${action}_${entity}`;
+        const name = `${actionTranslations[action]} ${entityTranslations[entity]}`;
+        const description = `${actionDescription[action]} ${entityTranslations[entity].toLowerCase()}`;
+        const exists = await this.permissionModel.exists({ code });
+        if (!exists) {
+          permissions.push({
+            name,
+            code,
+            description,
+            status: true,
+          });
+        }
+      }
+    }
 
-    // if (permissions.length > 0) {
-    //   await this.permissionModel.insertMany(permissions);
-    //   console.log(`Se insertaron ${permissions.length} permisos`);
-    // } else {
-    //   console.log(`Todos los permisos ya existen`);
-    // }
+    if (permissions.length > 0) {
+      await this.permissionModel.insertMany(permissions);
+      console.log(`Se insertaron ${permissions.length} permisos`);
+    } else {
+      console.log(`Todos los permisos ya existen`);
+    }
   }
 
   private capitalize(word: string): string {
