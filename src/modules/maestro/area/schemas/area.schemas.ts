@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Especialidad {
+export class Area {
     @Prop({ required: true })
     nombre: string;
     
@@ -14,7 +14,6 @@ export class Especialidad {
 
     @Prop({ default: true })
     estado: boolean;
-    
 }
 
-export const EspecialidadSchema = SchemaFactory.createForClass(Especialidad);
+export const AreaSchema = SchemaFactory.createForClass(Area);

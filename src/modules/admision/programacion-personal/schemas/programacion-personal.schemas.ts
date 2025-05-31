@@ -1,3 +1,5 @@
+import { Area } from '@modules/maestro/area/schemas/area.schemas';
+import { Consultorio } from '@modules/maestro/consultorio/schemas/consultorio.schemas';
 import { Especialidad } from '@modules/maestro/especialidad/schemas/especialidad.schemas';
 import { User } from '@modules/seguridad/user/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -12,15 +14,24 @@ export class ProgramacionPersonal {
     @Prop({ type: Types.ObjectId, ref: 'Especialidad', required: true })
     especialidad: Especialidad;
 
+    @Prop({ type: Types.ObjectId, ref: 'Area', required: true })
+    area: Area;
 
-    @Prop({ required: true })
-    abreviatura: string;
+    @Prop({ type: Types.ObjectId, ref: 'Area', required: true })
+    consultio: Consultorio;
 
-    @Prop({ required: true, uppercase: true })
-    codigo: string;
+    @Prop()
+    horaInicio: Date;
 
-    @Prop({ default: true })
-    estado: boolean;
+    @Prop()
+    horaFinal: Date;
+
+    @Prop({
+        type: [Date],
+        default: []
+    })
+    fechasProgramadas: Date[];
+
 }
 
 export const ProgramacionPersonalSchema = SchemaFactory.createForClass(ProgramacionPersonal);

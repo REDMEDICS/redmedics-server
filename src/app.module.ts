@@ -10,7 +10,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { AuthModule, PermissionModule, UserModule } from '@modules/seguridad';
-import { AreaModule, CareCenterModule, EspecialidadModule, TipoSeguroModule } from '@modules/maestro';
+import { AreaModule, CareCenterModule, ConsultorioModule, EspecialidadModule, TipoSeguroModule, TurnoModule } from '@modules/maestro';
 import { CountryModule, DocumentTypeModule, UbigeoModule } from '@modules/generico';
 import { PatientModule, ProgramacionPersonalModule } from '@modules/admision';
 
@@ -41,7 +41,9 @@ import { PatientModule, ProgramacionPersonalModule } from '@modules/admision';
     DocumentTypeModule,
     PatientModule,
     ProgramacionPersonalModule,
-    TipoSeguroModule
+    TipoSeguroModule,
+    ConsultorioModule,
+    TurnoModule
   ],
   controllers: [AppController],
   providers: [

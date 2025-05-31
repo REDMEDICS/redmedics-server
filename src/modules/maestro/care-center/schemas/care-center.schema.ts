@@ -1,3 +1,4 @@
+import { Consultorio } from '@modules/maestro/consultorio/schemas/consultorio.schemas';
 import { Especialidad } from '@modules/maestro/especialidad/schemas/especialidad.schemas';
 import { User } from '@modules/seguridad/user/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -66,8 +67,41 @@ export class CareCenter extends Document {
         status?: boolean;
     }>;
 
-    @Prop({ type: [Types.ObjectId], ref: 'Especialidad' })
-    especialidades: Especialidad[];
+    @Prop({
+        type: [{
+            especialidad: {
+                type: Types.ObjectId,
+                ref: 'Especialidad',
+                required: true
+            },
+            turnos: [{
+                dia: {
+                    type: String,
+                    enum: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+                    required: true
+                },
+                horas: [{
+                    inicio: { type: Date, required: true },
+                    fin: { type: Date, required: true }
+                }]
+            }]
+        }],
+        default: []
+    })
+    especialidadesConTurnos: Array<{
+        especialidad: Types.ObjectId;
+        turnos: Array<{
+            dia: string;
+            horas: Array<{
+                inicio: Date;
+                fin: Date;
+            }>;
+        }>;
+    }>;
+
+
+    @Prop({ type: [Types.ObjectId], ref: 'Consultorio' })
+    consultorios: Consultorio[];
 
     @Prop({
         type: Types.ObjectId,
