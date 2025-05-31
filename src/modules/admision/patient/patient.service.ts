@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Patient } from './schemas/patient.schemas';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class PatientService {
-  create(createPatientDto: CreatePatientDto) {
-    return 'This action adds a new patient';
+
+  constructor(
+    @InjectModel(Patient.name)
+    private readonly patientModel: Model<Patient>,
+  ) { }
+  async create(createPatientDto: CreatePatientDto): Promise<Patient> {
+    const createdPatient = new this.patientModel(createPatientDto);
+    return await createdPatient.save();
   }
 
-  findAll() {
-    return `This action returns all patient`;
+  async findAll(): Promise<Patient[]> {
+    return await this.patientModel.find()
+      .populate('tipoDocumento')
+      .populate('tipoSeguro')
+      .exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} patient`;
+  async findOne(id: string): Promise<Patient> {
+    const patient = await this.patientModel.findById(id)
+      .populate('tipoDocumento')
+      .populate('tipoSeguro')
+      .exec();
+
+    if (!patient) {
+      throw new NotFoundException(`Patient with ID ${id} not found`);
+    }
+    return patient;
   }
 
-  update(id: number, updatePatientDto: UpdatePatientDto) {
-    return `This action updates a #${id} patient`;
+  async update(id: string, updatePatientDto: UpdatePatientDto): Promise<Patient> {
+    const existingPatient = await this.patientModel.findByIdAndUpdate(
+      id,
+      updatePatientDto,
+      { new: true }
+    )
+      .populate('tipoDocumento')
+      .populate('tipoSeguro')
+      .exec();
+
+    if (!existingPatient) {
+      throw new NotFoundException(`Patient with ID ${id} not found`);
+    }
+    return existingPatient;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} patient`;
+  async remove(id: string) {
+    const patient = await this.patientModel.findByIdAndUpdate(
+      id,
+      { estado: false },
+      { new: true }
+    ).exec();
+    if (!patient) {
+      throw new NotFoundException(`Paciente con ID ${id} no encontrado`);
+    }
+    return patient;
   }
 }

@@ -2,7 +2,7 @@ import { DocumentType } from '@modules/generico/document-type/schemas/document-t
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Patient {
     @Prop({ required: true })
     celular: string;
@@ -36,6 +36,9 @@ export class Patient {
 
     @Prop()
     fechaNacimiento: Date;
+
+    @Prop({ default: true })
+    estado: boolean;
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

@@ -16,8 +16,7 @@ export class DocumentType extends Document {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Country',
-    required: true,
+    ref: 'Country'
   })
   country: Country;
 
