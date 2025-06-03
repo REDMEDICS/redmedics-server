@@ -3,8 +3,8 @@ import { User } from './user/schemas/user.schema';
 import { ObjectId } from 'mongoose';
 
 export type JwtPayload = {
-  id: ObjectId;
-  email: User['email'];
+  id: any;
+  correo: User['email'];
   role: User['role'];
   fullName: string;
 };
@@ -14,5 +14,5 @@ export type RequestWithJwtPayload = ExpressRequestWithJWT;
 
 export interface ProviderUser {
   id: string;
-  email: string;
+  correo: string;
 }

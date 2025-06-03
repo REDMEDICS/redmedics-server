@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import * as express from 'express'; 
+import * as express from 'express';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 
@@ -41,18 +41,18 @@ export class AppFactory {
         app.use(helmet({ contentSecurityPolicy: false }));
         app.use(cookieParser());
 
-        if (process.env.NODE_ENV === 'development') {
-          const options = new DocumentBuilder()
-            .setTitle('Vivasur API')
-            .setDescription('List of endpoints for VivaSur API')
-            .setVersion('1.0')
-            .build();
+        const options = new DocumentBuilder()
+          .setTitle('Redmedics API')
+          .setDescription('List of endpoints for Redmedics API')
+          .setVersion('1.0')
+          .build();
 
-          const document = SwaggerModule.createDocument(app, options);
-          SwaggerModule.setup('docs', app, document, {
-            jsonDocumentUrl: 'docs/json',
-          });
-        }
+        const document = SwaggerModule.createDocument(app, options);
+        SwaggerModule.setup('docs', app, document, {
+          jsonDocumentUrl: 'docs/json',
+        });
+        // if (process.env.NODE_ENV === 'development') {
+        // }
 
         app.init();
       })
