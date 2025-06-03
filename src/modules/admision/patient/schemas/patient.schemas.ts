@@ -1,4 +1,4 @@
-import { DocumentType } from '@modules/generico/document-type/schemas/document-type.schema';
+// import { DocumentType } from '@modules/generico/document-type/schemas/document-type.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 

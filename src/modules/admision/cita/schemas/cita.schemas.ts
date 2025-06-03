@@ -1,5 +1,5 @@
 import { Especialidad } from '@modules/maestro/especialidad/schemas/especialidad.schemas';
-import { User } from '@modules/seguridad/user/schemas/user.schema';
+import { Usuario } from '@modules/seguridad/usuario/schemas/usuario.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
@@ -25,9 +25,9 @@ export class Cita {
 
     @Prop({
         type: Types.ObjectId,
-        ref: 'User',
+        ref: 'Usuario',
     })
-    profesional: User;
+    profesional: Usuario;
 
     @Prop({ required: true })
     turno: Date;

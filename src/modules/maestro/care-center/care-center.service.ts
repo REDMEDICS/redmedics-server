@@ -4,9 +4,9 @@ import { UpdateCareCenterDto } from './dto/update-care-center.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CareCenter } from './schemas/care-center.schema';
 import { Model, ObjectId, Types } from 'mongoose';
-import { NewCareCenterDto } from './dto/new-care-center.dto';
 import { Permission } from '@modules/seguridad/permission/schemas/permission.schema';
-import { User } from '@modules/seguridad/user/schemas/user.schema';
+import { RegisterCareCenterDto } from './dto/register-care-center.dto';
+import { Usuario } from '@modules/seguridad/usuario/schemas/usuario.schema';
 
 @Injectable()
 export class CareCenterService {
@@ -14,9 +14,9 @@ export class CareCenterService {
   constructor(
     @InjectModel(CareCenter.name) private readonly careCenterModel: Model<CareCenter>,
     @InjectModel(Permission.name) private readonly permissionModel: Model<Permission>,
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(Usuario.name) private readonly usuarioModel: Model<Usuario>,
   ) { }
-  async create(createCareCenterDto: CreateCareCenterDto, userId: ObjectId) {
+  async register(createCareCenterDto: RegisterCareCenterDto, userId: ObjectId) {
     const permissions = await this.permissionModel.find().select('code -_id').lean();
     const permissionCodes = permissions.map(p => p.code);
     const roleId = new Types.ObjectId();
@@ -31,29 +31,54 @@ export class CareCenterService {
       }],
       createdBy: userId
     });
-    await this.userModel.findByIdAndUpdate(
+    await this.usuarioModel.findByIdAndUpdate(
       userId,
       { role: roleId, $addToSet: { centers: careCenter._id } }
     );
     return careCenter;
   }
 
-  async newCareCenter(newCareCenterDto: NewCareCenterDto, userId: ObjectId) {
+  async create(newCareCenterDto: CreateCareCenterDto, userId: ObjectId) {
     const careCenter = await this.careCenterModel.create({ ...newCareCenterDto, createdBy: userId });
-    await this.userModel.findByIdAndUpdate(
+    await this.usuarioModel.findByIdAndUpdate(
       userId,
       { $addToSet: { centers: careCenter._id } }
     );
     return careCenter;
   }
 
-  async findAll(userId: ObjectId) {
-    const data: any = await this.userModel
+  // async findAll(userId: ObjectId): Promise<CareCenter[]> {
+  async findAll(userId: ObjectId): Promise<any> {
+    // const data: any = await this.usuarioModel
+    //   .findById(userId)
+    //   .select('centers')
+    //   .populate('centers', '-roles -createdAt -updatedAt')
+    //   .lean();
+    // return data.centers;
+
+    // return this.careCenterModel.find()
+    //   .populate('especialidadesConTurnos.especialidad')
+    //   .populate('consultorios')
+    //   .exec();
+
+    const data: any = await this.usuarioModel
       .findById(userId)
-      .select('centers')
-      .populate('centers', '-roles -createdAt -updatedAt')
+      .populate({
+        path: 'centers',
+        populate: [
+          {
+            path: 'consultorios',
+            model: 'Consultorio' // Asegúrate de que coincida con el nombre de tu modelo
+          },
+          {
+            path: 'especialidadesConTurnos.especialidad',
+            model: 'Especialidad' // Asegúrate de que coincida con el nombre de tu modelo
+          }
+        ]
+      })
       .lean();
-    return data.centers;
+
+    return data;
   }
 
   async findOne(id: string) {

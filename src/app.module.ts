@@ -9,10 +9,10 @@ import { envValidationSchema } from './config/env-validation.schema';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import { AuthModule, PermissionModule, UserModule } from '@modules/seguridad';
-import { AreaModule, CareCenterModule, ConsultorioModule, EspecialidadModule, TipoSeguroModule, TurnoModule } from '@modules/maestro';
-import { CountryModule, DocumentTypeModule, UbigeoModule } from '@modules/generico';
-import { PatientModule, ProgramacionPersonalModule } from '@modules/admision';
+import { AuthModule, PermissionModule, UsuarioModule } from '@modules/seguridad';
+import { AreaModule, CentroAsistencialModule, ConsultorioModule, EspecialidadModule, TipoSeguroModule, TurnoCentroModule } from '@modules/maestro';
+import { CountryModule, TipoDocumentoModule, UbigeoModule } from '@modules/generico';
+import { PacienteModule, ProgramacionPersonalModule } from '@modules/admision';
 
 
 @Module({
@@ -30,20 +30,21 @@ import { PatientModule, ProgramacionPersonalModule } from '@modules/admision';
       }),
       inject: [ConfigService],
     }),
-    UserModule,
-    CareCenterModule,
+    UsuarioModule,
+    // CareCenterModule,
+    CentroAsistencialModule,
     PermissionModule,
     AuthModule,
     CountryModule,
     AreaModule,
     EspecialidadModule,
     UbigeoModule,
-    DocumentTypeModule,
-    PatientModule,
+    TipoDocumentoModule,
+    PacienteModule,
     ProgramacionPersonalModule,
     TipoSeguroModule,
     ConsultorioModule,
-    TurnoModule
+    TurnoCentroModule
   ],
   controllers: [AppController],
   providers: [

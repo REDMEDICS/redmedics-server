@@ -1,7 +1,8 @@
 import { Area } from '@modules/maestro/area/schemas/area.schemas';
 import { Consultorio } from '@modules/maestro/consultorio/schemas/consultorio.schemas';
 import { Especialidad } from '@modules/maestro/especialidad/schemas/especialidad.schemas';
-import { User } from '@modules/seguridad/user/schemas/user.schema';
+import { Usuario } from '@modules/seguridad/usuario/schemas/usuario.schema';
+// import { User } from '@modules/seguridad/user/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
@@ -9,7 +10,7 @@ import { Types } from 'mongoose';
 export class ProgramacionPersonal {
 
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    profesional: User;
+    profesional: Usuario;
 
     @Prop({ type: Types.ObjectId, ref: 'Especialidad', required: true })
     especialidad: Especialidad;

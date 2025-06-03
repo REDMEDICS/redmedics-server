@@ -12,14 +12,14 @@ import { JwtPayload, ProviderUser } from 'src';
 import { getPasswordHash, isPasswordValid } from 'src/common/utils/auth.utils';
 import { SignUpDto } from './dto/sign-up.dto';
 import { OAuth2Client } from 'google-auth-library';
-import { User } from '../user/schemas/user.schema';
 import { RefreshToken } from './schemas/refresh-token.schema';
+import { Usuario } from '../usuario/schemas/usuario.schema';
 
 @Injectable()
 export class AuthService {
   isProductionOrQA: boolean;
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(Usuario.name) private readonly userModel: Model<Usuario>,
     @InjectModel(RefreshToken.name) private refreshTokenModel: Model<RefreshToken>,
     private jwtService: JwtService,
     private readonly configSvc: ConfigService,
@@ -78,18 +78,18 @@ export class AuthService {
     return null;
   }
 
-  async validateUser(email: string, password: string): Promise<JwtPayload> {
+  async validateUser(correo: string, password: string): Promise<JwtPayload> {
     const user = await this.userModel
-      .findOne({ email, verifiedAccount: true }).populate('role', '-createdAt -updatedAt -status').exec();
+      .findOne({ correo, cuentaVerificada: true }).exec();
     if (!user) throw new UnauthorizedException('Credenciales no válidas');
     const isMatch = await isPasswordValid(password, user.password);
     if (!isMatch) throw new UnauthorizedException('Credenciales no válidas');
 
     return {
-      id: user._id as ObjectId,
-      email: user.email,
-      fullName: `${user.names} ${user.surnames}`,
-      role: user.role,
+      id: user._id,
+      correo: user.correo,
+      fullName: `${user.nombres} ${user.apellidos}`,
+      role: 'ADMINISTRADOR',
     };
   }
 
@@ -101,9 +101,9 @@ export class AuthService {
     if (!user) throw new NotFoundException('Usuario no encontrado o cuenta no verificada');
     return {
       id: user._id as ObjectId,
-      email: user.email,
-      fullName: `${user.names} ${user.surnames}`,
-      role: user.role
+      correo: user.correo,
+      fullName: `${user.nombres} ${user.apellidos}`,
+      role: 'ADMIN'
     };
   }
 
@@ -115,9 +115,9 @@ export class AuthService {
     if (provider == 'GOOGLE') {
       userProvier = await this.validateGoogle(idToken);
     }
-    const { id, email } = userProvier;
+    const { id, correo } = userProvier;
     const user = await this.userModel
-      .findOne({ email })
+      .findOne({ correo })
       .populate('role', '-createdAt -updatedAt -status')
       .exec();
     if (!user) {
@@ -126,9 +126,9 @@ export class AuthService {
     await this.provider(user, id, provider);
     return {
       id: user._id as ObjectId,
-      email: user.email,
+      correo: user.correo,
       fullName: `Merling Josue Ramirez Yugra`,
-      role: user.role,
+      role: 'ADMIN',
     };
   }
 
@@ -141,7 +141,7 @@ export class AuthService {
     const payload = ticket.getPayload();
     return {
       id: payload!.sub,
-      email: payload!.email ?? '',
+      correo: payload!.email ?? '',
     };
   }
 

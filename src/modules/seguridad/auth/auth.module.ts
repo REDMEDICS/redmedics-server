@@ -14,7 +14,7 @@ import {
 import { LocalStrategy } from './strategy/local.strategy';
 // import { AuthGateway } from './auth.gateway';
 import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema';
-import { User, UserSchema } from '../user/schemas/user.schema';
+import { Usuario, UsuarioSchema } from '../usuario/schemas/usuario.schema';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { User, UserSchema } from '../user/schemas/user.schema';
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
+      { name: Usuario.name, schema: UsuarioSchema },
       { name: RefreshToken.name, schema: RefreshTokenSchema } 
     ]),
     PassportModule,

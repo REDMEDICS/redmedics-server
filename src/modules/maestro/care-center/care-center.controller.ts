@@ -4,22 +4,22 @@ import { CreateCareCenterDto } from './dto/create-care-center.dto';
 import { UpdateCareCenterDto } from './dto/update-care-center.dto';
 import { AccessAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { ExpressRequestWithJWT } from 'src';
-import { NewCareCenterDto } from './dto/new-care-center.dto';
+import { RegisterCareCenterDto } from './dto/register-care-center.dto';
 @UseGuards(AccessAuthGuard)
 @Controller('care-center')
 export class CareCenterController {
   constructor(private readonly careCenterService: CareCenterService) {}
 
   @Post('register')
-  create(@Body() createCareCenterDto: CreateCareCenterDto, @Req() req: ExpressRequestWithJWT) {
+  register(@Body() registerCareCenterDto: RegisterCareCenterDto, @Req() req: ExpressRequestWithJWT) {
     const { id } = req.user;
-    return this.careCenterService.create(createCareCenterDto, id);
+    return this.careCenterService.register(registerCareCenterDto, id);
   }
 
   @Post()
-  newCareCenter(@Body() newCareCenterDto: NewCareCenterDto, @Req() req: ExpressRequestWithJWT) {
+  create(@Body() createCareCenterDto: CreateCareCenterDto, @Req() req: ExpressRequestWithJWT) {
     const { id } = req.user;
-    return this.careCenterService.newCareCenter(newCareCenterDto, id);
+    return this.careCenterService.create(createCareCenterDto, id);
   }
 
   @Get()

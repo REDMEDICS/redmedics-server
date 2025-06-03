@@ -8,13 +8,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(
         private authSvc: AuthService
     ) {
-        super({usernameField: 'email',})
+        super({usernameField: 'correo',})
     }
 
-    async validate(email: string, password: string): Promise<any> {
-        const user = await this.authSvc.validateUser(email, password);
+    async validate(correo: string, password: string): Promise<any> {
+        const user = await this.authSvc.validateUser(correo, password);
         if (!user) {
-            throw new UnauthorizedException("Credenciales incorrectas. Verifica tu email y contraseña");
+            throw new UnauthorizedException("Credenciales incorrectas. Verifica tu correo y contraseña");
         }
         return user;
     }

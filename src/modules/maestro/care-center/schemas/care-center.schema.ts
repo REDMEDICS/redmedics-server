@@ -1,70 +1,47 @@
 import { Consultorio } from '@modules/maestro/consultorio/schemas/consultorio.schemas';
-import { Especialidad } from '@modules/maestro/especialidad/schemas/especialidad.schemas';
-import { User } from '@modules/seguridad/user/schemas/user.schema';
+// import { User } from '@modules/seguridad/user/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false })
-export class Role extends Document {
-    @Prop({ type: String, unique: true, trim: true, required: true })
-    name: string;
-
-    @Prop({
-        type: [String],
-        required: true,
-        default: []
-    })
-    permissions: string[];
-
-    @Prop({ type: String, required: false })
-    description?: string;
-
-    @Prop({ type: Boolean, default: true })
-    status?: boolean;
-}
-
-export const RoleSchema = SchemaFactory.createForClass(Role);
-
-@Schema({ timestamps: true, versionKey: false })
 export class CareCenter extends Document {
     @Prop({ required: true })
-    name: string;
+    nombre: string;
 
     @Prop()
-    phone: string;
+    telefono: string;
 
     @Prop()
-    latitude: number;
+    latitud: number;
 
     @Prop()
-    longitude: number;
+    longitud: number;
 
     @Prop()
-    address: string;
+    direccion: string;
 
     @Prop()
-    image: string;
+    imagen: string;
 
-    @Prop({ default: false })
-    status: boolean;
+    @Prop({ default: true })
+    estado: boolean;
 
     @Prop()
     ubigeo: string;
-
     @Prop({
         type: [{
-            name: { type: String, required: true },
-            permissions: { type: [String], required: true },
-            description: { type: String },
-            status: { type: Boolean, default: true }
+            nombre: { type: String, required: true, unique: true, uppercase: true },
+            permisos: { type: [String], required: true },
+            descripcion: { type: String },
+            estado: { type: Boolean, default: true }
         }],
         default: []
     })
     roles: Array<{
-        name: string;
-        permissions: string[];
-        description?: string;
-        status?: boolean;
+        nombre: string;
+        permisos: string[];
+        descripcion?: string;
+        estado?: boolean;
     }>;
 
     @Prop({
@@ -107,13 +84,13 @@ export class CareCenter extends Document {
         type: Types.ObjectId,
         ref: 'User'
     })
-    createdBy: User;
+    createdBy: any;
 
     @Prop({
         type: Types.ObjectId,
         ref: 'User',
     })
-    updatedBy?: User;
+    updatedBy?: any;
 }
 
 export const CareCenterSchema = SchemaFactory.createForClass(CareCenter);

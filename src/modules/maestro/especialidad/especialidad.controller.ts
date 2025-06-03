@@ -19,16 +19,16 @@ export class EspecialidadController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.especialidadService.findOne(+id);
+    return this.especialidadService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEspecialidadDto: UpdateEspecialidadDto) {
-    return this.especialidadService.update(+id, updateEspecialidadDto);
+    return this.especialidadService.update(id, updateEspecialidadDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.especialidadService.remove(+id);
+    return this.especialidadService.remove(id);
   }
 }

@@ -5,12 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Especialidad, EspecialidadSchema } from './schemas/especialidad.schemas';
 
 @Module({
-    imports: [
-      MongooseModule.forFeature([
-        { name: Especialidad.name, schema: EspecialidadSchema }
-      ]),
-    ],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Especialidad.name, schema: EspecialidadSchema }
+    ]),
+  ],
   controllers: [EspecialidadController],
   providers: [EspecialidadService],
 })
-export class EspecialidadModule {}
+export class EspecialidadModule { }

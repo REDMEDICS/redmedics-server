@@ -3,11 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   validateDocumentExists,
-  validateNoRelatedDocuments,
   validateObjectId,
 } from 'src/common/utils/mongo-validation.utils';
 import { Permission } from './schemas/permission.schema';
-import { Role } from '@modules/maestro/care-center/schemas/care-center.schema';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 
@@ -16,9 +14,7 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 export class PermissionService {
   constructor(
     @InjectModel(Permission.name)
-    private readonly permissionModel: Model<Permission>,
-    @InjectModel(Role.name)
-    private readonly roleModel: Model<Role>,
+    private readonly permissionModel: Model<Permission>
   ) { }
 
   async findAll() {
@@ -61,11 +57,11 @@ export class PermissionService {
       'Permission',
     );
 
-    await validateNoRelatedDocuments(
-      this.roleModel,
-      { permissions: id },
-      'Permission is used in a role, cannot be deleted',
-    );
+    // await validateNoRelatedDocuments(
+    //   this.roleModel,
+    //   { permissions: id },
+    //   'Permission is used in a role, cannot be deleted',
+    // );
 
     return this.permissionModel.findByIdAndDelete(id).exec();
   }
