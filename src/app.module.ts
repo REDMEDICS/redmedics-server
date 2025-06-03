@@ -4,18 +4,16 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 import config from './config/config';
 import { envValidationSchema } from './config/env-validation.schema';
-import { UserModule } from './modules/user/user.module';
-import { CareCenterModule } from './modules/care-center/care-center.module';
-import { PermissionModule } from './modules/permission/permission.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { UbigeoModule } from './modules/ubigeo/ubigeo.module';
-import { CountryModule } from './modules/country/country.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { AuthModule, PermissionModule, UsuarioModule } from '@modules/seguridad';
+import { AreaModule, CentroAsistencialModule, ConsultorioModule, EspecialidadModule, TipoSeguroModule, TurnoCentroModule } from '@modules/maestro';
+import { CountryModule, TipoDocumentoModule, UbigeoModule } from '@modules/generico';
+import { PacienteModule, ProgramacionPersonalModule } from '@modules/admision';
+
 
 @Module({
   imports: [
@@ -32,12 +30,21 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
       }),
       inject: [ConfigService],
     }),
-    UserModule,
-    CareCenterModule,
+    UsuarioModule,
+    // CareCenterModule,
+    CentroAsistencialModule,
     PermissionModule,
     AuthModule,
+    CountryModule,
+    AreaModule,
+    EspecialidadModule,
     UbigeoModule,
-    CountryModule
+    TipoDocumentoModule,
+    PacienteModule,
+    ProgramacionPersonalModule,
+    TipoSeguroModule,
+    ConsultorioModule,
+    TurnoCentroModule
   ],
   controllers: [AppController],
   providers: [
